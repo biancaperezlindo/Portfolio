@@ -1,6 +1,7 @@
 
 using Microsoft.EntityFrameworkCore;
 using Portfolio;
+using Portfolio.Data;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -10,19 +11,12 @@ builder.Services.AddControllers();
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<AplicationContext>(
-       options => options.UseSqlite("Data Source=.;Initial Catalog=PortfolioDb;Integrated Security=True;"));
 
-builder.Services.AddCors(options =>
-{
-    // this defines a CORS policy called "default"
-    options.AddPolicy("default", policy =>
-    {
-        policy.WithOrigins("http://127.0.0.1:5173")
-            .AllowAnyHeader()
-            .AllowAnyMethod();
-    });
-});
+builder.Services.AddDbContext<ApplicationContext>(
+       options => options.UseSqlite("Data Source=ExperienceApi.db;"));
+
+builder.Services.AddScoped<ExperienceRepository>();
+
 var app = builder.Build();
 
 // Configure the HTTP request pipeline.
@@ -34,8 +28,6 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
-app.UseAuthorization();
-app.UseCors("default");
 app.MapControllers();
 
 app.Run();
